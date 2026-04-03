@@ -2,10 +2,24 @@ import { env } from '../config/env.js';
 import { START_TEXT } from '../config/sections.js';
 import { trackEvent } from '../services/analyticsService.js';
 import { sendMessage, sendPhotoFromPath } from '../services/telegramService.js';
-import { canSendStartNow, ensureUser } from '../services/userService.js';
+import { ensureUser, markStartSentNow } from '../services/userService.js';
 import { buildEarlyAccessInlineKeyboard, buildMainReplyKeyboard } from '../telegram/keyboards.js';
 
-const START_DEBOUNCE_SECONDS = 10;
+const START_DEBOUNCE_SECONDS = 3;
+const START_DEBOUNCE_MS = START_DEBOUNCE_SECONDS * 1000;
+
+function shouldDebounceStart(lastStartSentAt) {
+  if (!lastStartSentAt) {
+    return false;
+  }
+
+  const lastSentMs = new Date(lastStartSentAt).getTime();
+  if (Number.isNaN(lastSentMs)) {
+    return false;
+  }
+
+  return Date.now() - lastSentMs < START_DEBOUNCE_MS;
+}
 
 async function trySendStartCard(chatId) {
   if (!env.startCardPath) {
@@ -29,8 +43,7 @@ export async function handleStartCommand({ update, message, startParam = null })
 
   const user = await ensureUser(from, { startParam });
 
-  const canSendStart = await canSendStartNow(from.id, START_DEBOUNCE_SECONDS);
-  if (!canSendStart) {
+  if (shouldDebounceStart(user?.last_start_sent_at)) {
     await trackEvent({
       update,
       telegramId: from.id,
@@ -62,6 +75,8 @@ export async function handleStartCommand({ update, message, startParam = null })
   await sendMessage(chatId, 'Если хотите приоритетный доступ, оставьте заявку ниже:', {
     replyMarkup: buildEarlyAccessInlineKeyboard()
   });
+
+  await markStartSentNow(from.id);
 
   return user;
 }

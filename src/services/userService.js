@@ -1,6 +1,6 @@
 import {
   getUserByTelegramId,
-  reserveStartSendWindow,
+  setLastStartSentAt,
   setCurrentSection,
   setEarlyAccessOptIn,
   setOpenAiConversationId,
@@ -39,9 +39,8 @@ export async function touchUserActivity(telegramId) {
   return touchUser(telegramId);
 }
 
-export async function canSendStartNow(telegramId, cooldownSeconds = 10) {
-  const reserved = await reserveStartSendWindow(telegramId, cooldownSeconds);
-  return Boolean(reserved);
+export async function markStartSentNow(telegramId) {
+  return setLastStartSentAt(telegramId);
 }
 
 export async function updateOpenAiConversationId(telegramId, conversationId) {
