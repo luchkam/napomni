@@ -1,6 +1,7 @@
 import express from 'express';
 import adminRouter from './routes/admin.js';
 import healthRouter from './routes/health.js';
+import landingRouter from './routes/landing.js';
 import telegramWebhookRouter from './routes/telegramWebhook.js';
 
 export function createApp() {
@@ -13,6 +14,7 @@ export function createApp() {
   });
 
   app.use(healthRouter);
+  app.use(landingRouter);
   app.use('/admin', adminRouter);
   app.use('/telegram', telegramWebhookRouter);
 
