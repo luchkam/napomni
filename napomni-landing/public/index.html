@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAPOMNI — Помню всё за тебя</title>
+  <meta name="description" content="AI-ассистент, который запоминает всё и напоминает когда нужно. Кидай текст, фото, голос — он разберёт.">
+  <meta property="og:title" content="NAPOMNI — Помню всё за тебя">
+  <meta property="og:description" content="AI-ассистент, который запоминает всё и напоминает когда нужно. Кидай текст, фото, голос — он разберёт.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="#" class="navbar-logo">
+        <img src="logo.png" alt="NAPOMNI" class="navbar-logo-img">
+        <span class="navbar-logo-text">NAPOMNI</span>
+      </a>
+      <div class="navbar-links" id="navLinks">
+        <a href="#how-it-works" class="nav-link">Как это работает</a>
+        <a href="#features" class="nav-link">Возможности</a>
+        <a href="#comparison" class="nav-link">Сравнение</a>
+      </div>
+      <a href="#early-access" class="btn btn-nav">Получить доступ</a>
+      <button class="hamburger" id="hamburger" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#how-it-works" class="nav-link">Как это работает</a>
+      <a href="#features" class="nav-link">Возможности</a>
+      <a href="#comparison" class="nav-link">Сравнение</a>
+      <a href="#early-access" class="btn btn-nav">Получить доступ</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <h1 class="hero-title animate-in">Помню всё за тебя</h1>
+        <p class="hero-subtitle animate-in">Кидай в бота всё подряд — рецепты, расписание, анализы, пароли, идеи. ИИ сам разложит по полочкам и напомнит когда нужно.</p>
+        <a href="#early-access" class="btn btn-primary animate-in">Попробовать бесплатно →</a>
+      </div>
+      <div class="hero-mockup animate-in">
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="tg-header">
+              <div class="tg-header-back">‹</div>
+              <div class="tg-header-avatar">N</div>
+              <div class="tg-header-info">
+                <div class="tg-header-name">NAPOMNI</div>
+                <div class="tg-header-status">бот</div>
+              </div>
+            </div>
+            <div class="tg-chat" id="tgChat">
+              <div class="tg-msg tg-msg-out tg-hidden" data-delay="500">
+                <div class="tg-bubble tg-bubble-out">
+                  <span class="tg-photo-placeholder">🖼</span> фото рецепта борща
+                  <span class="tg-time">14:23</span>
+                </div>
+              </div>
+              <div class="tg-msg tg-msg-in tg-hidden" data-delay="2000">
+                <div class="tg-avatar-small">N</div>
+                <div class="tg-bubble tg-bubble-in">
+                  ✅ Сохранил в «Рецепты». Хочешь напомнить когда готовить?
+                  <span class="tg-time">14:23</span>
+                </div>
+              </div>
+              <div class="tg-msg tg-msg-out tg-hidden" data-delay="3500">
+                <div class="tg-bubble tg-bubble-out">
+                  Завтра в 10 запись к стоматологу
+                  <span class="tg-time">14:24</span>
+                </div>
+              </div>
+              <div class="tg-msg tg-msg-in tg-hidden" data-delay="5000">
+                <div class="tg-avatar-small">N</div>
+                <div class="tg-bubble tg-bubble-in">
+                  📅 Поставил напоминание на завтра 9:00 — за час до приёма.
+                  <span class="tg-time">14:24</span>
+                </div>
+              </div>
+              <div class="tg-msg tg-msg-out tg-hidden" data-delay="6500">
+                <div class="tg-bubble tg-bubble-out">
+                  Где тот рецепт холодца?
+                  <span class="tg-time">14:25</span>
+                </div>
+              </div>
+              <div class="tg-msg tg-msg-in tg-hidden" data-delay="8000">
+                <div class="tg-avatar-small">N</div>
+                <div class="tg-bubble tg-bubble-in">
+                  📎 Вот он! Сохранён 12 марта. <span class="tg-file-badge">[фото]</span>
+                  <span class="tg-time">14:25</span>
+                </div>
+              </div>
+            </div>
+            <div class="tg-input">
+              <div class="tg-input-field">Сообщение...</div>
+              <div class="tg-input-send">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z" fill="#8E8E93"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem -->
+  <section class="section" id="problem">
+    <div class="container">
+      <h2 class="section-title animate-in">Знакомо?</h2>
+      <div class="problem-grid">
+        <div class="problem-card animate-in">
+          <div class="problem-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="url(#grad1)"/><defs><linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2196F3"/><stop offset="100%" stop-color="#4CAF50"/></linearGradient></defs></svg>
+          </div>
+          <h3>Забыл, куда сохранил рецепт</h3>
+          <p>Скриншоты в фотоплёнке, заметки в трёх приложениях, закладки в браузере...</p>
+        </div>
+        <div class="problem-card animate-in">
+          <div class="problem-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="url(#grad2)" stroke-width="2" fill="none"/><path d="M12 6v6l4 2" stroke="url(#grad2)" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="grad2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2196F3"/><stop offset="100%" stop-color="#4CAF50"/></linearGradient></defs></svg>
+          </div>
+          <h3>Пропустил запись к врачу</h3>
+          <p>Записал на бумажке, потерял. Или в календаре, но без напоминания.</p>
+        </div>
+        <div class="problem-card animate-in">
+          <div class="problem-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="3" stroke="url(#grad3)" stroke-width="2" fill="none"/><path d="M7 2v4M17 2v4M3 10h18" stroke="url(#grad3)" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="grad3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4CAF50"/><stop offset="100%" stop-color="#CDDC39"/></linearGradient></defs></svg>
+          </div>
+          <h3>10 приложений для простых вещей</h3>
+          <p>Заметки, напоминалки, списки, календарь, пароли — каждое отдельно и ничего не связано.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <h2 class="section-title animate-in">Один чат. Одна память. Ноль настроек.</h2>
+      <div class="steps">
+        <div class="step animate-in">
+          <div class="step-number">1</div>
+          <div class="step-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M12 16l-4-4h3V4h2v8h3l-4 4z" fill="url(#gs1)"/><path d="M20 18H4v2h16v-2z" fill="url(#gs1)"/><defs><linearGradient id="gs1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2196F3"/><stop offset="100%" stop-color="#4CAF50"/></linearGradient></defs></svg>
+          </div>
+          <h3>Кинь что угодно</h3>
+          <p>Текст, голос, фото, файл, ссылка — просто отправь в чат. Никаких папок, тегов, категорий.</p>
+        </div>
+        <div class="step-arrow animate-in">
+          <svg width="40" height="24" viewBox="0 0 40 24" fill="none"><path d="M0 12h32m0 0l-6-6m6 6l-6 6" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="step animate-in">
+          <div class="step-number">2</div>
+          <div class="step-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 00-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 001 1h6a1 1 0 001-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 00-7-7zm0 2a5 5 0 015 5c0 1.7-.85 3.2-2.14 4.1l-.86.6V16h-4v-2.3l-.86-.6A5 5 0 017 9a5 5 0 015-5zM9 19v1a3 3 0 006 0v-1H9z" fill="url(#gs2)"/><defs><linearGradient id="gs2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4CAF50"/><stop offset="100%" stop-color="#CDDC39"/></linearGradient></defs></svg>
+          </div>
+          <h3>ИИ сам разберёт</h3>
+          <p>Распознает тип информации, разложит по разделам, поставит напоминание если нужно.</p>
+        </div>
+        <div class="step-arrow animate-in">
+          <svg width="40" height="24" viewBox="0 0 40 24" fill="none"><path d="M0 12h32m0 0l-6-6m6 6l-6 6" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="step animate-in">
+          <div class="step-number">3</div>
+          <div class="step-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="url(#gs3)"/><defs><linearGradient id="gs3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2196F3"/><stop offset="100%" stop-color="#CDDC39"/></linearGradient></defs></svg>
+          </div>
+          <h3>Спроси когда нужно</h3>
+          <p>«Где тот рецепт?», «Когда у Артёма кружок?», «Какие были показания счётчика?» — просто спроси.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section" id="features">
+    <div class="container">
+      <h2 class="section-title animate-in">Твоя память без ограничений</h2>
+      <div class="features-grid">
+        <div class="feature-card animate-in"><div class="feature-emoji">🍳</div><h3>Рецепты</h3><p>Фото, ссылки, голосовые заметки — всё найдётся</p></div>
+        <div class="feature-card animate-in"><div class="feature-emoji">📅</div><h3>Расписание</h3><p>Кружки детей, записи к врачу, встречи</p></div>
+        <div class="feature-card animate-in"><div class="feature-emoji">💊</div><h3>Здоровье</h3><p>Анализы, назначения, результаты обследований</p></div>
+        <div class="feature-card animate-in"><div class="feature-emoji">🔑</div><h3>Пароли и доступы</h3><p>Wi-Fi, коды домофонов, логины</p></div>
+        <div class="feature-card animate-in"><div class="feature-emoji">🏠</div><h3>Дом</h3><p>Показания счётчиков, номера мастеров, гарантии</p></div>
+        <div class="feature-card animate-in"><div class="feature-emoji">💡</div><h3>Идеи</h3><p>Мысли на бегу, планы, вдохновение</p></div>
+        <div class="feature-card animate-in"><div class="feature-emoji">📎</div><h3>Документы</h3><p>Сканы, договоры, реквизиты</p></div>
+        <div class="feature-card animate-in"><div class="feature-emoji">🎁</div><h3>Списки</h3><p>Покупки, подарки, вишлисты</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mockup -->
+  <section class="section" id="mockup">
+    <div class="container">
+      <h2 class="section-title animate-in">Как это выглядит</h2>
+      <div class="laptop-frame animate-in">
+        <div class="laptop-top">
+          <div class="laptop-camera"></div>
+        </div>
+        <div class="laptop-screen">
+          <div class="app-sidebar">
+            <div class="app-sidebar-logo">N</div>
+            <div class="app-sidebar-item app-sidebar-active">📁 Все записи</div>
+            <div class="app-sidebar-item">🍳 Рецепты</div>
+            <div class="app-sidebar-item">💊 Здоровье</div>
+            <div class="app-sidebar-item">🏠 Дом</div>
+            <div class="app-sidebar-item">📅 Расписание</div>
+            <div class="app-sidebar-item">🔑 Пароли</div>
+            <div class="app-sidebar-item">💡 Идеи</div>
+          </div>
+          <div class="app-main">
+            <div class="app-card">
+              <div class="app-card-tag tag-recipe">Рецепт</div>
+              <div class="app-card-title">Борщ классический</div>
+              <div class="app-card-date">Сохранено 12 марта</div>
+            </div>
+            <div class="app-card">
+              <div class="app-card-tag tag-health">Здоровье</div>
+              <div class="app-card-title">Запись к стоматологу 15.04</div>
+              <div class="app-card-date">Напоминание: 15.04 в 9:00</div>
+            </div>
+            <div class="app-card">
+              <div class="app-card-tag tag-home">Дом</div>
+              <div class="app-card-title">Показания воды: 1234.5</div>
+              <div class="app-card-date">Сохранено 1 апреля</div>
+            </div>
+            <div class="app-card">
+              <div class="app-card-tag tag-idea">Идея</div>
+              <div class="app-card-title">Подарок маме на день рождения</div>
+              <div class="app-card-date">Сохранено 28 марта</div>
+            </div>
+          </div>
+          <div class="app-chat">
+            <div class="app-chat-header">Чат с NAPOMNI</div>
+            <div class="app-chat-messages">
+              <div class="app-chat-msg app-chat-msg-in">Привет! Что найти?</div>
+              <div class="app-chat-msg app-chat-msg-out">Покажи все рецепты</div>
+              <div class="app-chat-msg app-chat-msg-in">Нашёл 12 рецептов. Показать?</div>
+            </div>
+            <div class="app-chat-input">Спроси что-нибудь...</div>
+          </div>
+        </div>
+        <div class="laptop-bottom">
+          <div class="laptop-trackpad"></div>
+        </div>
+      </div>
+      <p class="mockup-caption animate-in">Веб-версия и приложение — в разработке. Telegram-бот — уже скоро.</p>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section class="section" id="comparison">
+    <div class="container">
+      <h2 class="section-title animate-in">Не ещё одна напоминалка</h2>
+      <div class="comparison-table animate-in">
+        <div class="comparison-row comparison-header">
+          <div class="comparison-cell comparison-feature"></div>
+          <div class="comparison-cell">Заметки в&nbsp;телефоне</div>
+          <div class="comparison-cell">Notion / Obsidian</div>
+          <div class="comparison-cell">Обычные напоминалки</div>
+          <div class="comparison-cell comparison-highlight">NAPOMNI</div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-cell comparison-feature">Кинул и забыл</div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span><span class="cmp-label">Нужны папки</span></div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span><span class="cmp-label">Нужна настройка</span></div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span><span class="cmp-label">Только время</span></div>
+          <div class="comparison-cell comparison-highlight"><span class="cmp-yes">✓</span></div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-cell comparison-feature">Понимает фото/голос</div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span></div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span></div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span></div>
+          <div class="comparison-cell comparison-highlight"><span class="cmp-yes">✓</span></div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-cell comparison-feature">Сам категоризирует</div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span></div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span></div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span></div>
+          <div class="comparison-cell comparison-highlight"><span class="cmp-yes">✓</span></div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-cell comparison-feature">Умные напоминания</div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span></div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span></div>
+          <div class="comparison-cell"><span class="cmp-warn">⚠</span><span class="cmp-label">Ручные</span></div>
+          <div class="comparison-cell comparison-highlight"><span class="cmp-yes">✓</span></div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-cell comparison-feature">Поиск по смыслу</div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span></div>
+          <div class="comparison-cell"><span class="cmp-warn">⚠</span><span class="cmp-label">По словам</span></div>
+          <div class="comparison-cell"><span class="cmp-no">✕</span></div>
+          <div class="comparison-cell comparison-highlight"><span class="cmp-yes">✓</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Early access form -->
+  <section class="section section-form" id="early-access">
+    <div class="container">
+      <h2 class="section-title animate-in">Будь первым. Бесплатно.</h2>
+      <p class="section-subtitle animate-in">Первые 500 пользователей получат 3 месяца бесплатного доступа. Оставь контакт — напишем, когда запустимся и подключим бонус.</p>
+      <div class="form-wrapper animate-in">
+        <form id="subscribeForm" class="subscribe-form">
+          <input type="tel" name="phone" placeholder="+7 (___) ___-__-__" class="form-input" id="phoneInput">
+          <input type="email" name="email" placeholder="E-mail" class="form-input">
+          <button type="submit" class="btn btn-primary btn-submit">Хочу попробовать!</button>
+          <p class="form-note">Никакого спама. Только уведомление о запуске.</p>
+        </form>
+        <div id="formSuccess" class="form-success" style="display:none;">
+          <div class="confetti-container" id="confetti"></div>
+          <p>🎉 Готово! Вы в списке. Напишем в ближайшее время.</p>
+        </div>
+      </div>
+      <p class="counter animate-in">Уже записались: <strong>47</strong> человек</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-logo">
+        <img src="logo.png" alt="NAPOMNI" class="footer-logo-img">
+        <span>NAPOMNI</span>
+      </div>
+      <p class="footer-copy">&copy; 2026 NAPOMNI. Помним всё за тебя.</p>
+      <div class="footer-links">
+        <a href="https://t.me/NapomniAI_bot" target="_blank" rel="noopener">Telegram-бот</a>
+        <a href="#" id="privacyLink">Политика конфиденциальности</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Privacy Modal -->
+  <div class="modal-overlay" id="privacyModal">
+    <div class="modal">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-body">
+        <h2>Политика конфиденциальности проекта Napomni</h2>
+        <p><strong>Дата вступления в силу: 03.04.2026</strong></p>
+
+        <h3>1. Общие положения</h3>
+        <p>1.1. Настоящая Политика конфиденциальности определяет порядок обработки и защиты информации, которую проект Napomni получает от пользователей при использовании Telegram-бота, сайта, мобильных и иных цифровых сервисов проекта.</p>
+        <p>1.2. Используя проект Napomni, пользователь подтверждает, что ознакомился с настоящей Политикой и выражает согласие на обработку своих данных на условиях, изложенных в ней.</p>
+        <p>1.3. Если пользователь не согласен с условиями настоящей Политики, он должен прекратить использование проекта Napomni.</p>
+        <p>1.4. Проект Napomni предназначен для хранения, систематизации, поиска и напоминания информации, которую пользователь самостоятельно передаёт в сервис.</p>
+
+        <h3>2. Какие данные могут обрабатываться</h3>
+        <p>2.1. Проект Napomni может обрабатывать следующие данные пользователя:</p>
+        <ul>
+          <li>имя, никнейм, username в Telegram;</li>
+          <li>номер телефона, если он был предоставлен пользователем;</li>
+          <li>текстовые сообщения, голосовые сообщения, фотографии, файлы, PDF-документы, заметки, списки, рецепты, напоминания, расписания и иные материалы, загруженные пользователем;</li>
+          <li>данные о событиях, задачах, датах, встречах и напоминаниях;</li>
+          <li>технические данные о взаимодействии с сервисом, включая дату, время, тип устройства, IP-адрес, сведения о браузере или приложении, системные журналы и служебную информацию;</li>
+          <li>иные данные, которые пользователь добровольно передаёт через сервис.</li>
+        </ul>
+        <p>2.2. Пользователь понимает и соглашается с тем, что загружаемые им материалы могут содержать персональные данные как самого пользователя, так и третьих лиц.</p>
+        <p>2.3. Пользователь обязуется не передавать через проект Napomni данные третьих лиц без наличия у него законных оснований для такой передачи.</p>
+
+        <h3>3. Цели обработки данных</h3>
+        <p>3.1. Данные пользователя обрабатываются в следующих целях:</p>
+        <ul>
+          <li>предоставление доступа к функциям проекта Napomni;</li>
+          <li>сохранение, систематизация и поиск загруженной пользователем информации;</li>
+          <li>создание напоминаний, уведомлений и подсказок по запросу пользователя;</li>
+          <li>улучшение качества работы сервиса;</li>
+          <li>обеспечение безопасности, предотвращение злоупотреблений и технических сбоев;</li>
+          <li>связь с пользователем по вопросам работы сервиса;</li>
+          <li>исполнение требований законодательства.</li>
+        </ul>
+
+        <h3>4. Правовые основания обработки</h3>
+        <p>4.1. Проект Napomni обрабатывает данные на следующих основаниях:</p>
+        <ul>
+          <li>согласие пользователя на обработку персональных данных;</li>
+          <li>необходимость исполнения соглашения с пользователем о предоставлении функционала сервиса;</li>
+          <li>необходимость соблюдения требований применимого законодательства.</li>
+        </ul>
+
+        <h3>5. Как используется информация пользователя</h3>
+        <p>5.1. Информация, переданная пользователем, может использоваться для:</p>
+        <ul>
+          <li>хранения в личном пространстве пользователя;</li>
+          <li>автоматической сортировки по категориям;</li>
+          <li>распознавания содержания текста, изображений, голосовых сообщений и документов;</li>
+          <li>формирования напоминаний и уведомлений;</li>
+          <li>поиска ранее сохранённых материалов по запросу пользователя;</li>
+          <li>улучшения алгоритмов работы сервиса и качества пользовательского опыта.</li>
+        </ul>
+        <p>5.2. Проект Napomni не публикует загруженные пользователем материалы в открытом доступе без отдельного согласия пользователя.</p>
+
+        <h3>6. Передача данных третьим лицам</h3>
+        <p>6.1. Данные пользователя могут передаваться третьим лицам только в следующих случаях:</p>
+        <ul>
+          <li>если это необходимо для работы проекта Napomni, включая размещение данных на серверах, использование облачной инфраструктуры, средств аналитики, уведомлений, распознавания речи, обработки документов и иных технологических сервисов;</li>
+          <li>если такая передача необходима для исполнения пользовательского запроса;</li>
+          <li>если передача обязательна по закону, по запросу суда, правоохранительных или иных уполномоченных органов;</li>
+          <li>если пользователь дал отдельное согласие на такую передачу.</li>
+        </ul>
+        <p>6.2. При привлечении внешних сервисов и подрядчиков проект Napomni принимает разумные меры для защиты данных пользователя.</p>
+
+        <h3>7. Хранение данных</h3>
+        <p>7.1. Данные пользователя хранятся в течение срока, необходимого для достижения целей обработки, если более длительный срок не требуется по закону или не обусловлен характером сервиса.</p>
+        <p>7.2. Пользователь понимает, что смысл проекта Napomni заключается в долгосрочном хранении информации, которую пользователь передаёт для последующего поиска и напоминаний.</p>
+        <p>7.3. По запросу пользователя данные могут быть удалены, если иное не требуется по закону или не связано с необходимостью защиты законных интересов проекта Napomni.</p>
+
+        <h3>8. Защита данных</h3>
+        <p>8.1. Проект Napomni принимает необходимые организационные и технические меры для защиты данных пользователя от неправомерного доступа, изменения, раскрытия, блокирования, удаления, утраты или уничтожения.</p>
+        <p>8.2. Однако пользователь понимает, что ни один способ передачи информации через интернет и ни один способ электронного хранения не гарантирует абсолютную безопасность.</p>
+
+        <h3>9. Права пользователя</h3>
+        <p>9.1. Пользователь вправе:</p>
+        <ul>
+          <li>получать сведения о своих данных и порядке их обработки;</li>
+          <li>требовать уточнения, обновления или исправления своих данных;</li>
+          <li>требовать удаления своих данных в предусмотренных законом случаях;</li>
+          <li>отзывать согласие на обработку персональных данных;</li>
+          <li>обращаться с вопросами и требованиями, связанными с обработкой данных.</li>
+        </ul>
+
+        <h3>10. Особо чувствительные данные</h3>
+        <p>10.1. Пользователь самостоятельно принимает решение о передаче в проект Napomni документов и сведений повышенной чувствительности, включая медицинские документы, результаты анализов, сведения о здоровье, финансовые сведения и иные подобные материалы.</p>
+        <p>10.2. Передавая такие данные, пользователь подтверждает, что действует осознанно и добровольно.</p>
+        <p>10.3. Проект Napomni рекомендует пользователю не загружать сведения третьих лиц, медицинские документы третьих лиц и иные чувствительные данные без законных оснований и без согласия соответствующих лиц.</p>
+
+        <h3>11. Использование Telegram и сторонних платформ</h3>
+        <p>11.1. При использовании Telegram-бота обработка отдельных технических данных также может осуществляться платформой Telegram в соответствии с её собственными правилами и политикой конфиденциальности.</p>
+        <p>11.2. Проект Napomni не несёт ответственности за работу и правила обработки данных со стороны внешних платформ, если иное прямо не предусмотрено законом.</p>
+
+        <h3>12. Изменение Политики</h3>
+        <p>12.1. Проект Napomni вправе в любое время изменять настоящую Политику.</p>
+        <p>12.2. Актуальная версия Политики размещается на сайте проекта.</p>
+        <p>12.3. Продолжение использования проекта Napomni после публикации новой редакции Политики означает согласие пользователя с такой редакцией.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
