@@ -133,37 +133,135 @@ function buildOpenAiRequest({ sectionKey, userText, userSnapshot, mode, conversa
   return payload;
 }
 
+function extractOpenAiErrorMessage(error) {
+  return (
+    error?.error?.message ||
+    error?.response?.data?.error?.message ||
+    error?.message ||
+    ''
+  ).toString();
+}
+
+function isConversationRejectedError(error) {
+  const message = extractOpenAiErrorMessage(error).toLowerCase();
+  const status = Number(error?.status || error?.response?.status || 0);
+
+  if (!message.includes('conversation')) {
+    return false;
+  }
+
+  const rejectionSignals = [
+    'invalid',
+    'not found',
+    'does not exist',
+    'unknown',
+    'expired',
+    'rejected',
+    'not available'
+  ];
+
+  return [400, 404, 409, 422].includes(status) || rejectionSignals.some((token) => message.includes(token));
+}
+
+async function createConversationViaSdkOrHttp() {
+  if (!openaiClient) {
+    return null;
+  }
+
+  const sdkCreate = openaiClient?.conversations?.create;
+  if (typeof sdkCreate === 'function') {
+    try {
+      const created = await sdkCreate.call(openaiClient.conversations, {});
+      if (created?.id) {
+        return created.id;
+      }
+    } catch (error) {
+      console.error('[openai] conversations.create via SDK failed, fallback to HTTP:', extractOpenAiErrorMessage(error));
+    }
+  }
+
+  const response = await fetch('https://api.openai.com/v1/conversations', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${env.openaiApiKey}`,
+      'content-type': 'application/json'
+    },
+    body: '{}'
+  });
+
+  const payload = await response.json().catch(() => null);
+  if (!response.ok || !payload?.id) {
+    throw new Error(
+      `Conversation create failed (${response.status}): ${JSON.stringify(payload)}`
+    );
+  }
+
+  return payload.id;
+}
+
+async function ensureConversationId(activeConversationId) {
+  if (activeConversationId) {
+    return activeConversationId;
+  }
+
+  return createConversationViaSdkOrHttp();
+}
+
+async function createResponseWithConversation(params, asObjectConversation = false) {
+  return openaiClient.responses.create(
+    buildOpenAiRequest({ ...params, asObjectConversation })
+  );
+}
+
 async function requestWithConversationFallback(params) {
   const { conversationId } = params;
-
   if (!conversationId) {
-    const response = await openaiClient.responses.create(
-      buildOpenAiRequest({ ...params, asObjectConversation: false })
-    );
-    return { response, resetConversation: false };
+    throw new Error('Conversation id is required before responses.create');
+  }
+
+  let response = null;
+  let firstError = null;
+  try {
+    response = await createResponseWithConversation(params, false);
+    return { response, conversationIdUsed: conversationId, resetConversation: false };
+  } catch (error) {
+    firstError = error;
   }
 
   try {
-    const response = await openaiClient.responses.create(
-      buildOpenAiRequest({ ...params, asObjectConversation: false })
-    );
-    return { response, resetConversation: false };
-  } catch (firstError) {
-    try {
-      const response = await openaiClient.responses.create(
-        buildOpenAiRequest({ ...params, asObjectConversation: true })
-      );
-      return { response, resetConversation: false };
-    } catch (secondError) {
-      console.error('[openai] Conversation id failed, creating a new conversation:', {
-        firstError: firstError?.message,
-        secondError: secondError?.message
-      });
+    response = await createResponseWithConversation(params, true);
+    return { response, conversationIdUsed: conversationId, resetConversation: false };
+  } catch (secondError) {
+    if (!isConversationRejectedError(firstError) && !isConversationRejectedError(secondError)) {
+      throw secondError;
+    }
 
-      const response = await openaiClient.responses.create(
-        buildOpenAiRequest({ ...params, conversationId: null, asObjectConversation: false })
+    console.error('[openai] Conversation id rejected, creating a new conversation:', {
+      firstError: extractOpenAiErrorMessage(firstError),
+      secondError: extractOpenAiErrorMessage(secondError)
+    });
+
+    const renewedConversationId = await createConversationViaSdkOrHttp();
+    try {
+      response = await createResponseWithConversation(
+        { ...params, conversationId: renewedConversationId },
+        false
       );
-      return { response, resetConversation: true };
+      return {
+        response,
+        conversationIdUsed: renewedConversationId,
+        resetConversation: true
+      };
+    } catch (retryError) {
+      response = await createResponseWithConversation(
+        { ...params, conversationId: renewedConversationId },
+        true
+      );
+      return {
+        response,
+        conversationIdUsed: renewedConversationId,
+        resetConversation: true
+      };
     }
   }
 }
@@ -189,16 +287,23 @@ export async function generateSectionReply({
     : 'unknown';
 
   try {
-    const { response, resetConversation } = await requestWithConversationFallback({
+    const ensuredConversationId = await ensureConversationId(activeConversationId);
+    if (!ensuredConversationId) {
+      throw new Error('Unable to ensure conversation id');
+    }
+
+    const { response, resetConversation, conversationIdUsed } = await requestWithConversationFallback({
       sectionKey: section.sectionKey,
       userText,
       userSnapshot,
       mode,
-      conversationId: activeConversationId
+      conversationId: ensuredConversationId
     });
 
     const detectedConversationId = extractConversationId(response);
-    const finalConversationId = detectedConversationId ?? (resetConversation ? null : activeConversationId);
+    const finalConversationId = detectedConversationId
+      ?? conversationIdUsed
+      ?? (resetConversation ? null : activeConversationId);
 
     const extractedText = extractOutputText(response);
     if (!extractedText) {
