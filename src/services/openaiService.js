@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { env } from '../config/env.js';
-import { buildPrompt, demoRulesPrompt, globalSystemPrompt, RESPONSE_CLOSING_HINT } from '../config/prompts.js';
+import { buildPrompt, demoRulesPrompt, globalSystemPrompt, RESPONSE_CLOSING_VARIANTS } from '../config/prompts.js';
 import { getFallbackText, getSectionByKey } from '../config/sections.js';
 
 const openaiClient = env.openaiApiKey
@@ -55,17 +55,50 @@ function sanitizeMarkdownArtifacts(text) {
   return clean.trim();
 }
 
-function ensureClosingLine(text) {
-  const normalized = text.trim();
-  if (!normalized) {
-    return RESPONSE_CLOSING_HINT;
+function hashString(value) {
+  let hash = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    hash = ((hash << 5) - hash) + value.charCodeAt(index);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+function pickClosingVariant(seedText, sectionKey, mode) {
+  if (!RESPONSE_CLOSING_VARIANTS.length) {
+    return 'Можно открыть другой раздел, оставить заявку на ранний доступ или написать свободным текстом.';
   }
 
-  if (normalized.includes('Другой раздел') && normalized.includes('ранний доступ')) {
+  const seed = `${sectionKey}|${mode}|${seedText}`;
+  const index = hashString(seed) % RESPONSE_CLOSING_VARIANTS.length;
+  return RESPONSE_CLOSING_VARIANTS[index];
+}
+
+function hasCtaClosing(text) {
+  const lower = text.toLowerCase();
+  const hasSection = lower.includes('раздел');
+  const hasLead = lower.includes('ранний доступ') || lower.includes('заявк');
+  const hasFreeText = lower.includes('без кноп')
+    || lower.includes('напрям')
+    || lower.includes('свободн')
+    || lower.includes('своими словами');
+
+  return (hasSection && hasLead && hasFreeText)
+    || (hasSection && hasFreeText && lower.includes('можно'))
+    || (hasSection && hasLead && lower.includes('можно'));
+}
+
+function ensureClosingLine(text, sectionKey, mode) {
+  const normalized = text.trim();
+  if (!normalized) {
+    return pickClosingVariant('', sectionKey, mode);
+  }
+
+  if (hasCtaClosing(normalized)) {
     return normalized;
   }
 
-  return `${normalized}\n\n${RESPONSE_CLOSING_HINT}`;
+  return `${normalized}\n\n${pickClosingVariant(normalized, sectionKey, mode)}`;
 }
 
 function extractOutputText(response) {
@@ -103,10 +136,10 @@ function extractConversationId(response) {
   return null;
 }
 
-function buildFallback(sectionKey) {
+function buildFallback(sectionKey, mode = 'section') {
   const text = getFallbackText(sectionKey);
   const cleaned = sanitizeMarkdownArtifacts(text);
-  return ensureClosingLine(cleaned);
+  return ensureClosingLine(cleaned, sectionKey, mode);
 }
 
 function buildOpenAiRequest({ sectionKey, userText, userSnapshot, mode, conversationId, asObjectConversation }) {
@@ -314,7 +347,7 @@ export async function generateSectionReply({
     }
 
     const cleaned = sanitizeMarkdownArtifacts(extractedText);
-    const withClosingLine = ensureClosingLine(cleaned);
+    const withClosingLine = ensureClosingLine(cleaned, section.sectionKey, mode);
 
     return {
       text: limitReply(withClosingLine, getMaxChars(section.sectionKey)),
@@ -323,7 +356,7 @@ export async function generateSectionReply({
   } catch (error) {
     console.error('[openai] generateSectionReply failed:', error);
     return {
-      text: limitReply(buildFallback(section.sectionKey), getMaxChars(section.sectionKey)),
+      text: limitReply(buildFallback(section.sectionKey, mode), getMaxChars(section.sectionKey)),
       conversationId: activeConversationId
     };
   }

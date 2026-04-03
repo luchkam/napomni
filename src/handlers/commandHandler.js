@@ -1,4 +1,5 @@
 import { COMMAND_TO_SECTION_KEY } from '../config/commands.js';
+import { HELP_COMMANDS_TEXT } from '../config/helpText.js';
 import { splitPrivacyPolicy } from '../config/privacyPolicy.js';
 import { trackEvent } from '../services/analyticsService.js';
 import { sendMessage } from '../services/telegramService.js';
@@ -55,6 +56,20 @@ export async function handleCommand({ update, message, command, args = [] }) {
     });
 
     await sendPrivacyPolicy(chatId);
+    return;
+  }
+
+  if (command === 'help') {
+    await trackEvent({
+      update,
+      telegramId: from.id,
+      eventType: 'help_guide_sent',
+      sectionKey: 'help'
+    });
+
+    await sendMessage(chatId, HELP_COMMANDS_TEXT, {
+      replyMarkup: buildMainReplyKeyboard()
+    });
     return;
   }
 

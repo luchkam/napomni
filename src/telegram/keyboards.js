@@ -30,7 +30,7 @@ export function buildSectionActionsInlineKeyboard() {
         { text: 'Хочу ранний доступ', callback_data: CALLBACK_ACTIONS.EARLY_ACCESS },
         { text: 'Другой раздел', callback_data: CALLBACK_ACTIONS.OPEN_SECTIONS }
       ],
-      [{ text: 'Показать ещё', callback_data: CALLBACK_ACTIONS.SHOW_MORE }]
+      [{ text: 'Ещё по этому разделу', callback_data: CALLBACK_ACTIONS.SHOW_MORE }]
     ]
   };
 }
