@@ -15,25 +15,32 @@ import { sendMessage } from '../services/telegramService.js';
 import { ensureUser, getUser, markEarlyAccessOptIn, updateCurrentSection } from '../services/userService.js';
 import { buildEarlyAccessInlineKeyboard, buildMainReplyKeyboard, buildSectionActionsInlineKeyboard } from '../telegram/keyboards.js';
 
-async function notifyAdminAboutCapturedLead({ from, interestText }) {
+async function notifyAdminAboutNewLead({ from, lead }) {
   if (!env.adminChatId) {
     return;
   }
 
   const fullName = [from?.first_name, from?.last_name].filter(Boolean).join(' ').trim();
   const username = from?.username ? `@${from.username}` : 'не указан';
+  const source = lead?.source_param || 'не указан';
+  const firstSection = lead?.first_section || 'не указан';
+  const lastSection = lead?.last_section || 'не указан';
+  const interest = lead?.interest_text || 'пока не указано';
   const leadMessage = [
-    '🆕 Новая заявка на ранний доступ (бот)',
-    `👤 Имя: ${fullName || 'не указано'}`,
-    `🔗 Username: ${username}`,
-    `🆔 Telegram ID: ${from?.id}`,
-    `💬 Ответ: ${interestText}`
+    'Новый early access lead 🚀',
+    `- Telegram ID: ${from?.id ?? 'не указан'}`,
+    `- Username: ${username}`,
+    `- Имя: ${fullName || 'не указано'}`,
+    `- Source: ${source}`,
+    `- Первый раздел: ${firstSection}`,
+    `- Последний раздел: ${lastSection}`,
+    `- Interest: ${interest}`
   ].join('\n');
 
   try {
     await sendMessage(env.adminChatId, leadMessage);
   } catch (error) {
-    console.error('[early-access] Failed to notify admin chat:', error);
+    console.error('[early-access] Failed to notify admin chat about lead:', error);
   }
 }
 
@@ -59,7 +66,7 @@ export async function handleEarlyAccessEntry({
     sectionKey: 'early_access',
     payload: {
       trigger_source: triggerSource,
-      section_label: 'Хочу ранний доступ / 3 месяца бесплатно'
+      section_label: '🚀 Хочу ранний доступ / 3 месяца бесплатно'
     }
   });
 
@@ -80,7 +87,7 @@ export async function handleEarlyAccessEntry({
     sectionKey: userBeforeUpdate?.current_section ?? 'early_access'
   });
 
-  if (leadResult.state === 'already_captured') {
+  if (leadResult.state === 'already_captured' || leadResult.state === 'awaiting_existing') {
     await sendMessage(chatId, EARLY_ACCESS_ALREADY_REPLY, {
       replyMarkup: buildMainReplyKeyboard()
     });
@@ -98,6 +105,15 @@ export async function handleEarlyAccessEntry({
       { replyMarkup: buildMainReplyKeyboard() }
     );
     return;
+  }
+
+  if (leadResult.state === 'awaiting_new') {
+    setImmediate(() => {
+      void notifyAdminAboutNewLead({
+        from,
+        lead: leadResult.lead
+      });
+    });
   }
 
   await sendMessage(chatId, EARLY_ACCESS_QUESTION, {
@@ -141,13 +157,6 @@ export async function maybeCaptureLeadInterest({ update, chatId, from, text }) {
 
     await sendMessage(chatId, EARLY_ACCESS_DONE_REPLY, {
       replyMarkup: buildMainReplyKeyboard()
-    });
-
-    setImmediate(() => {
-      void notifyAdminAboutCapturedLead({
-        from,
-        interestText: normalizedText
-      });
     });
 
     return true;

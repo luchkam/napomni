@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS users (
   start_param TEXT,
   current_section TEXT,
   early_access_opt_in_at TIMESTAMPTZ NULL,
+  last_start_sent_at TIMESTAMPTZ NULL,
+  openai_conversation_id TEXT NULL,
   first_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

@@ -1,14 +1,14 @@
 export const TELEGRAM_COMMANDS = [
-  { command: 'start', description: 'Запустить демо-бот' },
-  { command: 'account', description: 'Как будет работать аккаунт' },
-  { command: 'premium', description: 'Что будет в Premium' },
-  { command: 'mysections', description: 'Разделы NAPOMNI' },
-  { command: 'deletecontext', description: 'Удаление и контроль контекста' },
-  { command: 'saveimage', description: 'Сохранение изображений (demo)' },
-  { command: 'savevideo', description: 'Сохранение видео (demo)' },
-  { command: 'settings', description: 'Настройки' },
-  { command: 'privacy', description: 'Приватность и безопасность' },
-  { command: 'help', description: 'Помощь и сценарии использования' }
+  { command: 'start', description: '👋 Что умеет бот' },
+  { command: 'account', description: '👤 Мой профиль' },
+  { command: 'premium', description: '🚀 Премиум' },
+  { command: 'mysections', description: '🗂️ Мои разделы' },
+  { command: 'deletecontext', description: '💬 Удалить контекст' },
+  { command: 'saveimage', description: '🖼️ Сохранить изображение' },
+  { command: 'savevideo', description: '🎬 Сохранить видео' },
+  { command: 'settings', description: '⚙️ Настройки бота' },
+  { command: 'privacy', description: '📄 Приватность и безопасность' },
+  { command: 'help', description: '🎱 Основные команды' }
 ];
 
 export const COMMAND_TO_SECTION_KEY = {

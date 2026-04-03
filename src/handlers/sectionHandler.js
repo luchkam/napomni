@@ -2,13 +2,12 @@ import { getSectionByKey } from '../config/sections.js';
 import { trackEvent } from '../services/analyticsService.js';
 import { generateSectionReply } from '../services/openaiService.js';
 import { sendMessage } from '../services/telegramService.js';
-import { ensureUser, getUser, updateCurrentSection } from '../services/userService.js';
-import { buildMainReplyKeyboard, buildSectionActionsInlineKeyboard, buildSectionPickerInlineKeyboard } from '../telegram/keyboards.js';
+import { ensureUser, getUser, updateCurrentSection, updateOpenAiConversationId } from '../services/userService.js';
+import { buildSectionActionsInlineKeyboard, buildSectionPickerInlineKeyboard } from '../telegram/keyboards.js';
 import { handleEarlyAccessEntry } from './earlyAccessHandler.js';
 
 async function sendSectionReply(chatId, text) {
-  await sendMessage(chatId, text, { replyMarkup: buildMainReplyKeyboard() });
-  await sendMessage(chatId, 'Дальше можно открыть другой раздел или оставить заявку на ранний доступ.', {
+  await sendMessage(chatId, text, {
     replyMarkup: buildSectionActionsInlineKeyboard()
   });
 }
@@ -62,14 +61,18 @@ export async function handleSectionSelection({
   const userProfile = await getUser(from.id);
   const userText = message?.text?.trim() ?? '';
 
-  const responseText = await generateSectionReply({
+  const response = await generateSectionReply({
     sectionKey: section.sectionKey,
     userText,
     userProfile,
     mode: 'section'
   });
 
-  await sendSectionReply(chatId, responseText);
+  if (response.conversationId !== (userProfile?.openai_conversation_id ?? null)) {
+    await updateOpenAiConversationId(from.id, response.conversationId ?? null);
+  }
+
+  await sendSectionReply(chatId, response.text);
 }
 
 export async function handleShowMore({ update, chatId, from }) {
@@ -97,12 +100,16 @@ export async function handleShowMore({ update, chatId, from }) {
     payload: { trigger_source: 'inline_button' }
   });
 
-  const responseText = await generateSectionReply({
+  const response = await generateSectionReply({
     sectionKey: activeSection,
     userText: 'Покажи больше примеров для этого раздела',
     userProfile,
     mode: 'show_more'
   });
 
-  await sendSectionReply(chatId, responseText);
+  if (response.conversationId !== (userProfile?.openai_conversation_id ?? null)) {
+    await updateOpenAiConversationId(from.id, response.conversationId ?? null);
+  }
+
+  await sendSectionReply(chatId, response.text);
 }

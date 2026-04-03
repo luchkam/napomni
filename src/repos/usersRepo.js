@@ -91,3 +91,33 @@ export async function touchUser(telegramId) {
   const result = await pool.query(query, [telegramId]);
   return result.rows[0] ?? null;
 }
+
+export async function reserveStartSendWindow(telegramId, cooldownSeconds = 10) {
+  const query = `
+    UPDATE users
+    SET last_start_sent_at = NOW(),
+        updated_at = NOW()
+    WHERE telegram_id = $1
+      AND (
+        last_start_sent_at IS NULL
+        OR last_start_sent_at < NOW() - ($2::text || ' seconds')::interval
+      )
+    RETURNING *
+  `;
+
+  const result = await pool.query(query, [telegramId, cooldownSeconds]);
+  return result.rows[0] ?? null;
+}
+
+export async function setOpenAiConversationId(telegramId, conversationId) {
+  const query = `
+    UPDATE users
+    SET openai_conversation_id = $2,
+        updated_at = NOW()
+    WHERE telegram_id = $1
+    RETURNING *
+  `;
+
+  const result = await pool.query(query, [telegramId, conversationId]);
+  return result.rows[0] ?? null;
+}

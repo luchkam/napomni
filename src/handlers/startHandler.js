@@ -2,8 +2,10 @@ import { env } from '../config/env.js';
 import { START_TEXT } from '../config/sections.js';
 import { trackEvent } from '../services/analyticsService.js';
 import { sendMessage, sendPhotoFromPath } from '../services/telegramService.js';
-import { ensureUser } from '../services/userService.js';
+import { canSendStartNow, ensureUser } from '../services/userService.js';
 import { buildEarlyAccessInlineKeyboard, buildMainReplyKeyboard } from '../telegram/keyboards.js';
+
+const START_DEBOUNCE_SECONDS = 10;
 
 async function trySendStartCard(chatId) {
   if (!env.startCardPath) {
@@ -26,6 +28,20 @@ export async function handleStartCommand({ update, message, startParam = null })
   }
 
   const user = await ensureUser(from, { startParam });
+
+  const canSendStart = await canSendStartNow(from.id, START_DEBOUNCE_SECONDS);
+  if (!canSendStart) {
+    await trackEvent({
+      update,
+      telegramId: from.id,
+      eventType: 'bot_start_debounced',
+      payload: {
+        start_param: startParam,
+        debounce_seconds: START_DEBOUNCE_SECONDS
+      }
+    });
+    return user;
+  }
 
   await trackEvent({
     update,

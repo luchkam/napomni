@@ -2,8 +2,8 @@ import { trackEvent } from '../services/analyticsService.js';
 import { maybeCaptureLeadInterest } from './earlyAccessHandler.js';
 import { generateSectionReply } from '../services/openaiService.js';
 import { sendMessage } from '../services/telegramService.js';
-import { ensureUser, getUser } from '../services/userService.js';
-import { buildMainReplyKeyboard, buildSectionActionsInlineKeyboard } from '../telegram/keyboards.js';
+import { ensureUser, getUser, updateOpenAiConversationId } from '../services/userService.js';
+import { buildSectionActionsInlineKeyboard } from '../telegram/keyboards.js';
 
 export async function handleTextMessage({ update, message }) {
   const text = message?.text?.trim();
@@ -40,18 +40,18 @@ export async function handleTextMessage({ update, message }) {
     }
   });
 
-  const responseText = await generateSectionReply({
+  const response = await generateSectionReply({
     sectionKey,
     userText: text,
     userProfile: user,
     mode: user?.current_section ? 'section_text' : 'general_demo'
   });
 
-  await sendMessage(chatId, responseText, {
-    replyMarkup: buildMainReplyKeyboard()
-  });
+  if (response.conversationId !== (user?.openai_conversation_id ?? null)) {
+    await updateOpenAiConversationId(from.id, response.conversationId ?? null);
+  }
 
-  await sendMessage(chatId, 'Если хотите, могу показать другой раздел или записать вас в ранний доступ.', {
+  await sendMessage(chatId, response.text, {
     replyMarkup: buildSectionActionsInlineKeyboard()
   });
 }

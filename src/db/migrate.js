@@ -11,6 +11,14 @@ export async function runMigrations() {
   const sql = await fs.readFile(schemaPath, 'utf8');
 
   await pool.query(sql);
+  await pool.query(`
+    ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS last_start_sent_at TIMESTAMPTZ NULL;
+  `);
+  await pool.query(`
+    ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS openai_conversation_id TEXT NULL;
+  `);
   console.log('[db] Migrations completed');
 }
 
