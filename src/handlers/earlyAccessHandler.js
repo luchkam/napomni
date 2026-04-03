@@ -3,6 +3,7 @@ import {
   EARLY_ACCESS_DONE_REPLY,
   EARLY_ACCESS_QUESTION
 } from '../config/sections.js';
+import { env } from '../config/env.js';
 import { trackEvent } from '../services/analyticsService.js';
 import {
   getLead,
@@ -13,6 +14,28 @@ import {
 import { sendMessage } from '../services/telegramService.js';
 import { ensureUser, getUser, markEarlyAccessOptIn, updateCurrentSection } from '../services/userService.js';
 import { buildEarlyAccessInlineKeyboard, buildMainReplyKeyboard, buildSectionActionsInlineKeyboard } from '../telegram/keyboards.js';
+
+async function notifyAdminAboutCapturedLead({ from, interestText }) {
+  if (!env.adminChatId) {
+    return;
+  }
+
+  const fullName = [from?.first_name, from?.last_name].filter(Boolean).join(' ').trim();
+  const username = from?.username ? `@${from.username}` : 'не указан';
+  const leadMessage = [
+    '🆕 Новая заявка на ранний доступ (бот)',
+    `👤 Имя: ${fullName || 'не указано'}`,
+    `🔗 Username: ${username}`,
+    `🆔 Telegram ID: ${from?.id}`,
+    `💬 Ответ: ${interestText}`
+  ].join('\n');
+
+  try {
+    await sendMessage(env.adminChatId, leadMessage);
+  } catch (error) {
+    console.error('[early-access] Failed to notify admin chat:', error);
+  }
+}
 
 export async function handleEarlyAccessEntry({
   update,
@@ -119,6 +142,14 @@ export async function maybeCaptureLeadInterest({ update, chatId, from, text }) {
     await sendMessage(chatId, EARLY_ACCESS_DONE_REPLY, {
       replyMarkup: buildMainReplyKeyboard()
     });
+
+    setImmediate(() => {
+      void notifyAdminAboutCapturedLead({
+        from,
+        interestText: normalizedText
+      });
+    });
+
     return true;
   }
 
